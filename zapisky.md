@@ -76,7 +76,7 @@
 
 - cílem je mít dělící čáru co nejdále od jednotlivých trénovacích bodů různých tříd
 
-- H1 neodděluje třídy, H2 jo, ale H3 to dělá od pohledu nejlépe (je výsledkem SVM) - s maximálními možnými vzdálenostmi
+- H1 neodděluje třídy, H2 jo, ale H3 to dělá od pohledu nejlépe (je výsledkem SVM) s maximálními možnými vzdálenostmi:
 
 <img width="400" src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/Svm_separating_hyperplanes_%28SVG%29.svg/1024px-Svm_separating_hyperplanes_%28SVG%29.svg.png">
 
@@ -84,17 +84,17 @@
 <!-- omit from toc -->
 ### Trénování
 
-- cílem je, aby všechny data určil SVM správně třídu:
+- cílem je, aby pro všechna data určil SVM správně třídu:
   - $\text{sgn}(w^Tx_i) = t_i$
   - kde $w$ jsou váhy, $x_i, t_i$ jsou $i$-té dato a target
-- ... a zároveň je co nejlépe oddělil:
+- ... a zároveň je co nejlépe oddělil (nejspíš je to interpretace této podmínky):
   - $\argmax_{w} = \frac12  ||\mathbf{w}||$
 
 - to je (:question: proč) ekvivalentní minimalizaci: 
   - $\argmin_{w} = \frac12  ||\mathbf{w}||^2$
 
 - to vede na odvození pomocí Lagrangiánu
-- může se stát, že data nejsou lineárně separabilní, pak použijeme "hinge loss" - pokud je dato špatně zařazeno, tak vrací loss ekvivalentní vzdálenosti od dělící čáry 
+- může se stát, že data nejsou lineárně separovatelná (jsou "skoro linárně separovatelné"), pak použijeme "hinge loss" - pokud je dato špatně zařazeno, tak vrací loss ekvivalentní vzdálenosti od dělící čáry 
 
 <!-- omit from toc -->
 ### Předpovědi
@@ -547,31 +547,31 @@ $$
 - **consistency**
   - podmnožina featur musí objekty klasifikovat stejně jako celý množina
   - *inconsistency* - objekty se stejnými featurami patří do jiných tříd
-  - nemůžeme osekat data jen na "hair" a "height", protože by $i_2$ a $i_8$ měly stejné features, ale jinak by se klasifikovaly
-  - ![](sunburn-data.png)
-  - ![](consistency-1.png)
-  - ![](consistency-2.png)
-  - ![](consistency-3.png)
+  - nemůžeme osekat data jen na "hair" a "height", protože by $i_2$ a $i_8$ měly stejné features, ale jinak by se klasifikovaly:
+  - <img width="400" src="images/sunburn-data.png">
+  - <img width="400" src="images/consistency-1.png">
+  - <img width="400" src="images/consistency-2.png">
+  - <img width="400" src="images/consistency-3.png">
 - **independence**
-  - ![](corr-feature-selector.png)
+  - <img width="400" src="images/corr-feature-selector.png">
 - **information-theoretical measures**
   - Hartley's information measure
     - délka informace (zprávy): $n$
     - velikost abecedy: $s$
     - užitek informace je odvozen od počtu možných informací (zpráv)
-    - $$\Im = n \log s$$
+    - $\Im = n \log s$
   - Shannon's information measure
     - diskrétní náhodná proměnná $A$ s možnými stavy $\{a_1, ..., a_n\}, P(A=a_i)=p_i$
     - užitek po pozorování $A$:
-    - $$\Im = - \log (P(A=a_i))$$
+    - $\Im = - \log (P(A=a_i))$
     - interpretace: po pozorování méně častého eventu získáme více informace
     - z toho se dá odvodit entropie jako:
-    - $$H(A) = \mathbb{E}(\Im)$$
-  - ![](mutual-info.png)
+    - $H(A) = \mathbb{E}(\Im)$
+  - <img width="400" src="images/mutual-info.png">
 - **interclasss distance**
-  - ![](interclass-distance.png)
+  - <img width="400" src="images/interclass-distance.png">
   - "Intraclass distance is the distance between two points that are in the same class.  
-    In your example, an **intra-class distance** is the distance between measurements $X_i$ and $X_j$, where $(i, j \in 1 \cdots N)$, and $X_i$ and $X_j$ are members of class $C$. One usually takes an average over the distances from all possible $(i, j)$ pairs within class $C$, and uses it as the objective function.  
+    An **intra-class distance** is the distance between measurements $X_i$ and $X_j$, where $(i, j \in 1 \cdots N)$, and $X_i$ and $X_j$ are members of class $C$. One usually takes an average over the distances from all possible $(i, j)$ pairs within class $C$, and uses it as the objective function.  
     You can also use the distance between $X_i$ and $\bar{X}_C$ (the average coordinate of all measurements in class $C$), and take the average of this over all measurements in class $C$.  
     In contrast, an **inter-class distance** is the distance between measurements $X_i$ and $X_j$, where $X_i$ and $X_j$ are members of different classes."
 
@@ -653,7 +653,7 @@ $$
 <!-- omit from toc -->
 ### Rozdíl mezi PCA a ICA
 
-- v PCA jsou na sebe komponenty komlé, v ICA to neplatí (ICA tedy dokáže zachytit věci, které PCA nedokáže)
+- v PCA jsou na sebe komponenty kolmé, v ICA to neplatí (ICA tedy dokáže zachytit věci, které PCA nedokáže)
 
 <img width="400" src="images/pca-vs-ica.png">
 
