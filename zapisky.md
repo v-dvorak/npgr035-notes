@@ -10,7 +10,7 @@
 
 - pokud to není explicitně uvedeno jinak, váhy všech algoritmů uvažujeme včetně biasu
 
-- některé zpracované otázky byly doplněny o informace z poznámek Júlie Križanové a Dominika Farhana, k nalezení [zde](https://dominik.whizzmot.dev/notes/mlcv/)
+- některé zpracované otázky byly doplněny o informace z poznámek Júlie Križanové a Dominika Farhana, k nalezení [zde](https://dominik.whizzmot.dev/notes/mlcv/), díky moc
 - poznámky vychází z poznatků z jiných předmětů: Vyhledávání ve videu, Úvod do umělé inteligence, Úvod do strojového učení v Pythonu
 - není toho tolik - pdfko je nafouklé, protože je tu dost obrázků, zkopírovaný jeden článek a formát má v sobě spoustu prázdného místa
 
@@ -20,8 +20,11 @@
 - [Okruh A – vyžaduje sa veľmi detailná odpoveď](#okruh-a--vyžaduje-sa-veľmi-detailná-odpoveď)
   - [1.1 Popíšte SVM a postup jeho trénovania. Čo je to kernel a na čo slúži pri SVM?](#11-popíšte-svm-a-postup-jeho-trénovania-čo-je-to-kernel-a-na-čo-slúži-pri-svm)
   - [1.2 Popíšte dopredné neurónové siete so spätným šírením chyby a postup ich trénovania.](#12-popíšte-dopredné-neurónové-siete-so-spätným-šírením-chyby-a-postup-ich-trénovania)
+    - [Learning rate](#learning-rate)
   - [1.3 Popíšte samoorganizujúce sa mapy a postup ich trénovania.](#13-popíšte-samoorganizujúce-sa-mapy-a-postup-ich-trénovania)
   - [1.4 Popíšte lineárny klasifikátor a postup jeho trénovania.](#14-popíšte-lineárny-klasifikátor-a-postup-jeho-trénovania)
+    - [Metoda gradientu](#metoda-gradientu)
+    - [Data processing](#data-processing)
   - [1.5 Popíšte K-means algoritmus, voľbu K a možné alternatívy](#15-popíšte-k-means-algoritmus-voľbu-k-a-možné-alternatívy)
 - [Okruh B - vyžaduje sa stredne detailná odpoveď](#okruh-b---vyžaduje-sa-stredne-detailná-odpoveď)
   - [2.1 Popíšte detailne metódu FLDA](#21-popíšte-detailne-metódu-flda)
@@ -94,7 +97,7 @@
   - $\argmin_{w} = \frac12  ||\mathbf{w}||^2$
 
 - to vede na odvození pomocí Lagrangiánu
-- může se stát, že data nejsou lineárně separovatelná (jsou "skoro linárně separovatelné"), pak použijeme "hinge loss" - pokud je dato špatně zařazeno, tak vrací loss ekvivalentní vzdálenosti od dělící čáry 
+- může se stát, že data nejsou lineárně separovatelná (jsou "skoro linárně separovatelné"), pak použijeme "hinge loss" - pokud je dato špatně zařazeno, tak vrací loss na základě vzdálenosti od dělící čáry 
 
 <!-- omit from toc -->
 ### Předpovědi
@@ -105,7 +108,7 @@
 <!-- omit from toc -->
 ### Kernel
 
-- občas se může stát, že data nejsou lineárně separovatelná, třeba:
+- může se stát, že data nejsou lineárně separovatelná, třeba:
 
 <img width="400" src="images/non-lin-svm.png">
 
@@ -124,8 +127,7 @@
 
 ## 1.2 Popíšte dopredné neurónové siete so spätným šírením chyby a postup ich trénovania.
 
-- dopředné neuronové sítě se zpětným šířeným chyby = *Feedforward neural networks with backpropagation*
-
+- = *Feedforward neural networks with backpropagation*
 - inspirace u reálných neuronových sítí - mozku
 - průchod signálu, od začátku do konce, jde pouze jedním směrem (bez zpětné vazby, cyklů atd.)
 - Universal Approximation Theorem nám říká, že dostatečně velká neuronová síť dokáže aproximovat jakoukoliv spojitou funkci
@@ -136,11 +138,13 @@
 1) **vstupní vrstva** - neurony, které přijímají data $(x_1, ..., x_n)$
 
 2) **skryté vrstvy** (volitelně mnoho)
-   - neurony, které zváží a sečtou aktivace a proženou to aktivační funkcí $\sigma(x)$, ($r_j$ je skalár)
+   - vrstva neuronů, v každém se spočítá vážený součet všech neuronů v předchozích vrstvě, ten se prožene aktivační funkcí $\sigma(x)$
    - $r_j = \sigma(\mathbf{w}_j^T \mathbf{x})$
+   - $r_j$ je skalár a zároveň síla signálu, který neuron vysílá do další vrstvy
 
 3) **výstupní vrstva**
-   - pravděpodobností klasifikace, prevděpodobností rozdělení, regrese, ... 
+   - pravděpodobností klasifikace, pravděpodobnostní rozdělení, regrese, ... 
+   - vrstva neuronů $\rightarrow$ vektor čísel, pravděpodobnostní rozdělení, jedno číslo ...
 
 <!-- omit from toc -->
 ### Trénování
@@ -149,7 +153,7 @@
 2) **dopředný průchod**
    - pro vstup $\mathbf{x}$ se spočítá výstup $\hat{\mathbf{y}}$
    - $\hat{\mathbf{y}}$ se porovná se správnou cílovou hodnotou $\mathbf{y}$, pomocí zvolené nelineární loss funkce $L$ jako $L(\hat{\mathbf{y}}, \mathbf{y})$
-3) **zpětné šíření** (= backpropagation)
+3) **zpětné šíření** (= *backpropagation*)
    - od výstupu směrem ke vstupu
    - spočteme gradient ztráty, přičteme k vahám
    - $\mathbf{W} \leftarrow \mathbf{W} + \Delta \mathbf{W},\; \Delta\mathbf{W} = - \alpha \nabla E\mid_\mathbf{W}$
@@ -166,6 +170,13 @@
 - **ReLU**: $\sigma(x) = \max(0, x)$
 - **Tanh**: $\sigma(x) = \frac{e^x - e^{-x}}{e^x + e^{-x}},\; H = (-1,1)$
 
+### Learning rate
+
+- odpovědný za to "jak velký mají updaty vliv na váhy"
+- malý *lr* $\rightarrow$ pomalé konvegence
+- velký *lr* $\rightarrow$ skáče z místa na místo, nemusí nikdy najít lokální optimum
+- learning rate je možné upravovat během tréninku podle toho, jaká je chybovost (jak rychle se blížíme lokálnímu optimum)
+
 <div style="page-break-after: always;"></div>
 
 ## 1.3 Popíšte samoorganizujúce sa mapy a postup ich trénovania.
@@ -177,7 +188,7 @@
 - cílem je, aby se neurony navázaly na topologickou strukrutur dat
 
 - "lattice" (:question: speciální matematický konstrukt), často čtvercová nebo šestiúhelníková síť neuronů
-- input data jsou propojena se všemi
+- input data jsou propojena se všemi neurony
 
 <!-- omit from toc -->
 ### Trénink
@@ -186,8 +197,11 @@
 2) náhodně vyber input vektor $\mathbf{x}$
 3) vyber nejbližší neuron (nejlepší matching)
    - $i^* = \argmin_i ||\mathbf{x} - \mathbf{w}_i||$
-4) update vah $i^*$ nodu
-5) update vah sousedních nodů ale ne stejně - pouze pro sousedy, přenásobení learning ratem (to pomáhá vyrovnat rozdíly ve vahách sousedících nodů), dá se specifikovat, jak velký okruh sousedních nodů má být updatem zasažen
+4) update vah $i^*$ nodu (váhy $\approx$ pozice nodu v prostoru)
+5) update vah sousedních nodů ale ne stejně - pouze pro sousedy, přenásobení learning ratem (to pomáhá vyrovnat rozdíly ve vahách sousedících nodů), dá se specifikovat, jak velký okruh sousedních nodů má být updatem zasažen (například podle vzdálenosti od centra updatu)
+
+<img width="400" src="https://editor.analyticsvidhya.com/uploads/40837SOM-Structure-and-Update-of-Best-Matching-Unit-19.png">
+
 6) intenzita updatu se postupně, se vzdáleností od nodu, který vyhrál, zmenšuje
 7) opakuje se po daný počet iterací
 
@@ -197,12 +211,40 @@
 
 ## 1.4 Popíšte lineárny klasifikátor a postup jeho trénovania.
 
-- pracujeme s datasetem, který má pouze dvě třídy, a ty jsou lineárně separovatlené
-- hledáme nadrovinu, která rozdělí prostor co nejlépe na jednotlivé třídy
+- pracujeme s datasetem, který má pouze dvě třídy, a ty jsou lineárně separovatelné
+- hledáme nadrovinu, která rozdělí prostor na dvě třídy (pokud nejsou lineárně separovetelné, tak ať ho dělí co nejlépe)
 
 - předpověď: $f(x) = \text{sign}(\mathbf{w}^T\mathbf{x})$
 
-- pro hlubší studium doporučuji *Križanová, Farhan*
+### Metoda gradientu
+
+- v prezentaci se tato metoda nazývá *Gradient Method*, za mě je lepší (a snad ekvivalentní) *Gradient Descent*
+- iterativně updatujeme dělící nadrovinu, dokud nekonverguje nebo nevyprší čas (podobně jako u SVM)
+- gradient nám poví, ve kterém směru se zvětší chyba, a my posuneme váhy přesně na druhou stranu (věříme, že se tím směrem chyba zmenší)
+- $u_{i+1} = u_i - \alpha(i)\nabla O\mid_{u_i}$
+- kde $O(x)$ je funkce, která je $0$, když jsou všechny objekty správně klasifikované; $\alpha(i)$ je learning rate v kroku 
+
+- ideální $\alpha$ lze najít pomocí Tyalorova rozvoje (více v *Križanová, Farhan*) 
+
+### Data processing
+
+- **batch processing**:
+  - gradinet loss funkce se spočítá na celé trénovací množině
+  - průměrná ztráta přes všechny příklady
+- **single processing**:
+  - váhy se updatují na základě jednoho data z trénovací množiny
+  - každé dato příspívá samo
+- :bulb: **mini-batch**:
+  - trénovací data se rozdělí na skupiny po $m$ datech
+  - váhy se updatují vždy podle jedné této skupiny
+
+| | **Batch**| **Single**|
+|-|-|-|
+| **Gradient**|vypočítaný přes všechny vzorky | vypočítaný pro jeden vzorek|
+| **Rychlost aktualizace**| pomalejší (celá množina dat)| rychlejší (jednotlivé vzorky)|
+| **Přesnost gradientu**  | přesný| méně přesný, ovlivněn šumem|
+| **Konvergence**| stabilní, ale pomalá| rychlá, ale oscilující|
+| **Vhodné pro**| malé datasety| velké datasety|
 
 <!-- omit from toc -->
 ### Trénování
@@ -222,15 +264,16 @@
 
 1) **inicializace**
    - $K$ bodů se náhodně rozmístí do prostoru
-   - jsou to počátěční "group centroidy"
+   - jsou to počátěční *group centroids*
 2) **přiřazení**
    - každý objekt se přiřadí k nejbližšímu možnému centroidu
 3) **rekalkulace**
    - přepočítá pozice centroidu v prostoru vzhledem k přiřazeným objektům
    - průměr pozic přiřazených objektů
-   - $\text{updated} = \frac{\sum_{\{x | C(x) = k\}}x}{N_k}$
+   - $$\text{updated} = \frac{\sum_{\{x | C(x) = k\}}x}{N_k}$$
+   - intepretace: posuneme centroid do těžiště bodů, které mu byly přiřazeny
 4) **opakuj** od 2)
-   - dokud není MSE < threshold, nebo se mění clustering
+   - dokud není $\text{MSE} < \text{threshold}$, nebo se mění clustering
 
 <img width="400" src="https://www.researchgate.net/publication/268880805/figure/fig3/AS:282625324404757@1444394536795/K-means-clustering-algorithm-An-example-2-cluster-run-is-shown-with-the-clusters.png">
 
@@ -338,34 +381,35 @@ So, $k=2,3,4$ appear to be good choices, whereas $k=5$ and $k=6$ give lower-qual
 
 - FLDA = *Fisher LDA* = *Linear Discriminant Analysis*
 - supervised method
-- redukce dimenzí a klasifikace dat do tříd
+- redukce dimenze a klasifikace dat do tříd
 
-- řeší vzathy uvnitř tříd a vztahy mezi třídami - v nové projekci musí být data v různých třídách do nejdále od sebe; data, která jsou společně v jedné třídě, musí být naopak co nejblíže; maximalizujeme poměr rozptylů mezi třídami a uvnitř tříd
+- řeší vzathy uvnitř tříd a vztahy mezi třídami:
+  - v nové projekci musí být data v různých třídách co nejdále od sebe
+  - data, která jsou společně v jedné třídě, musí být naopak co nejblíže
+  - maximalizujeme poměr rozptylů mezi třídami a uvnitř tříd
 
 - máme data $\{\mathbf{x}_1, \mathbf{x}_2, ..., \mathbf{x}_N\} \subset \mathbb{R}^d$
 - pro každou třídu $j$ průměr dat (vlastně střed toho clusteru):
 - $$\mu_j = \frac{1}{N_j} \sum_{\mathbf{x} \in \omega_j}$$
 - a průměr všech dat:
 - $$\mu = \frac{1}{N} \sum_{i=1}^N\mathbf{x}_i$$
-- **scatter** (rozptyl) v datech:
+- **total scatter** (= totální rozptyl dat):
 - $$S = \sum_{i=1}^N(\mathbf{x}_i - \mu)(\mathbf{x}_i - \mu)^T$$
 - :warning: $S$ není skalár, ale matice $\in \mathbb{R}^{d\times d}$
 - $$S = S_M + S_V$$
 
-- **Interclass scatter** (mezi třídou a celkem) a intraclass scatter (mezi prvkem ve třídě a třídou):
-- $$
-S_M = \sum_{j=1}^C N_j (\mu_j - \mu)(\mu_j - \mu)^T \\
-S_V = \sum_{j=1}^C S_j
-$$
+- **Interclass scatter** (= mezi průměrem třídy a celkem):
+- $$S_M = \sum_{j=1}^C N_j (\mu_j - \mu)(\mu_j - \mu)^T$$
 
-- **Intraclass scatter**:
-- $$S_j = \sum_{\mathbf{x} \in \omega_j}(\mathbf{x} - \mu_j)(\mathbf{x} - \mu_j)^T$$
+- **Intraclass scatter** (= součet rozptylů jednotlivých tříd od celku, průměru):
+- $$S_V = \sum_{j=1}^C S_j$$
+- kde $$S_j = \sum_{\mathbf{x} \in \omega_j}(\mathbf{x} - \mu_j)(\mathbf{x} - \mu_j)^T$$
 
 <img width="400" src="images/flda.png">
 
 - $\mathbf{w}$ je projekce dat do nového prostoru ($x_i' = \mathbf{w}^T\mathbf{x}_i$) pro dvě třídy, pro $C$ tříd je to $\mathbf{W} = [\mathbf{w}_1\mid\mathbf{w}_2\mid ... \mid \mathbf{w}_{C-1}]$
 
-- minimalizujeme:
+- minimalizujeme *Fisher's criterion*:
 - $$J(\mathbf{W}) = \frac{|\mathbf{W}^T S_M \mathbf{W}|}{|\mathbf{W}^T S_V \mathbf{W}|}$$
 
 - to se dá řešit obecně přes hledání vlastních vektorů (v prezentaci to je rozepsané víc, nepřijde mi důležité umět to nazpaměť, výše je materiálu na povídání dost :question:)
@@ -375,14 +419,14 @@ $$
 
 ## 2.2 Popíšte detailne metódu ICA
 
-- *Independent Component Analysis*
+- = *Independent Component Analysis*
 
 - snižování dimenze, oddělování komponent, rozklad na statisticky nezávislé komponenty
 
 <!-- omit from toc -->
 ### Princip
 
-- máme $n$ pozorování $\mathbf{X} = (\mathbf{x}_1, \mathbf{x}_2, ..., \mathbf{x}_n)$ a $m$ nezávislých zdrojových signálů $\mathbf{s}$ (něco jako clustery)
+- máme $n$ pozorování $\mathbf{X} = (\mathbf{x}_1, \mathbf{x}_2, ..., \mathbf{x}_n)$ a $m$ nezávislých zdrojových signálů $\mathbf{s}$
 - $\mathbf{x}$ vznikají jako lineární kombinace $\mathbf{s}$, tedy $\mathbf{x} = A\mathbf{s}$
 - chceme najjít $W$, $\mathbf{s} = W \mathbf{x}$ (recept, jak namíchat signály)
 
@@ -393,7 +437,7 @@ $$
 - $\mathbb{E}(\mathbf{s}_i) = 0$
 - $\text{Var}(\mathbf{s}_i) = 1$
 - non-Gaussianity = signál má rozdělení odlišné od gaussovského rozdělení (:bulb: díky tomu se dají identifikovat nezávislé komponenty)
-- $|\mathbf{x}| \geq |\mathbf{s}|$
+- $|\mathbf{x}| \geq |\mathbf{s}|$, abycho mohli signály spolehlivně rozeznat
 - :question: $\implies$ "$E\{SS^T\} = I$", "covariance matrix is unit matrix"
 
 <!-- omit from toc -->
@@ -403,7 +447,7 @@ $$
 
 1) **centrování**
    - odečtení průměru, průměr dat je nula
-   - $$\mathbf{X}' = \mathbf{X} - \bar{\mathbf{X}}$$
+   - $\mathbf{X}' = \mathbf{X} - \bar{\mathbf{X}}$
 2) **whitening**
    - aplikuje transformaci $B$
    - $\tilde{\mathbf{X}} = B\mathbf{X}'$ tak, aby $\sum_{\tilde{\mathbf{X}}} = I$ :question:
@@ -413,12 +457,21 @@ $$
 ### Výpočet
 
 - optimalizace směru $\mathbf{w}_i$, abychom maximalizovali non-Gaussianity
-- $$\mathbf{Y} = W \mathbf{X}$$
+- $\mathbf{Y} = W \mathbf{X}$
 - měření podle třetího a čtvrtého central moment - výpočetně náročné
 
 - můžeme to spočítat pomocí *Negentropy* = "distance to normality"
-- $$J(y) = H(y_G) - H(y) \approx J(y) \propto (E(G(y)) - E(G(y_G)))^2$$
+- $J(y) = H(y_G) - H(y) \approx J(y) \propto (E(G(y)) - E(G(y_G)))^2$
 - druhý člen mocnění je konstantní, dále se řeší pomocí Lagrangeových koeficientů
+
+<!-- omit from toc -->
+### ICA nevýhody
+
+- váhy jednotlivých signálů nelze určit
+- nelze určit znaménko singálu
+- pořadí signálů nelze určit
+
+- :bulb: výpočetně náročné, striktní předpoklady
 
 <!-- omit from toc -->
 ### :bulb: FastICA
@@ -431,15 +484,6 @@ $$
 4. opakuj 2., 3., dokud nekonverguje
 
 - lze rozšířit pro více dimenzí, viz prezentace
-
-<!-- omit from toc -->
-### ICA nevýhody
-
-- váhy jednotlivých signálů nelze určit
-- nelze určit znaménko singálu
-- pořadí signálů nelze určit
-
-- :bulb: výpočetně náročné, striktní předpoklady
 
 <!-- omit from toc -->
 ### :bulb: Redukce dimenze
@@ -462,31 +506,33 @@ $$
 <!-- omit from toc -->
 ### Trénink
 
-- uložíme si všechna data (efektivní struktury: kd-trees, ball trees)
-- výběr pouze nejdůležitějších dat:
-  - **editing** - odstranění bodů, které se neshodují s většinou svých $K$ sousedů
-  ![](k-editing.png)
-  - **condensing** - zachová jen body, které jsou potřeba k definování dělící čáry
-  ![](k-conden.png)
+- uložíme si všechna data
+- to je potřeba dělat efektivně:
+  - **efektivní struktury**: kd-trees, ball trees
+  - **redukce** množství dat: výběr pouze nejdůležitějších dat
+    - **editing** - odstranění bodů, které se neshodují s většinou svých $K$ sousedů
+    ![](k-editing.png)
+    - **condensing** - zachová jen body, které jsou potřeba k definování dělící čáry
+    - <img width="400" src="images/k-conden.png">
 
 <!-- omit from toc -->
-### Predikce (Klasifikace)
+### Predikce
 
-- pro $\mathbf{x}$ předpovídáme pomocí "kruhu" (podle toho, jakou si nadefinujeme normu) se středem v $\mathbf{x}$, který obsahuje přesně $K$ příkladů z trénovacích dat
+- pro $\mathbf{x}$ předpovídáme pomocí nejbližších (podle toho, jakou si nadefinujeme normu) $K$ sousedů z trénovacích dat
 
 - predikce **regrese**:
   - $$t = \sum_i \frac{w_i}{\sum_j w_j}t_i$$
   - $K$ sousedů má hodnoty (skaláry) $t_i$
+  - $w_i$ je váha třídy $i$
+  - zlomek uvnitř sumy normalizuje váhy tak, aby byly pravděpodobnostní distribucí
 
 - predikce **klasifikace**: je predikována nejčastější třída (`np.bincount`) 
   - $$\boldsymbol{t} = \sum_i \frac{w_i}{\sum_j w_j}\boldsymbol{t}_i$$
 
   - $\boldsymbol{t}_i$ jsou distribuce v kategoriích, $\boldsymbol{t} \in \mathbb{R}^d$, kde $d$ je počet tříd, se kterými pracujeme
-  - (kdybychom měli šest tříd, $K = 5$, třikrát potkali druhou třídu a dvakrát čtvrtou, tak by to mohlo vypadat nějak takto: $\mathbf{t} = (0,3,0,2,0,0)^T$)
+  - (kdybychom měli šest tříd, $K = 5$, třikrát potkali druhou třídu a dvakrát čtvrtou, tak by to mohlo vypadat nějak takto: $\mathbf{t} = (0,3,0,2,0,0)^T$, pak se to po prvcích vynásobí s váhami a máme předpověď)
 
-- $w_i$ je váha třídy $i$
-- zlomek uvnitř sumy normalizuje váhy tak, aby byly pravděpodobnostní distribucí
-- klasifikace vrací vektor pravděpodobností přes třídy, regrese vrací skalár
+- klasifikace vrací pravděpodobnostní rozdělení přes třídy, regrese vrací skalár
 
 <img width="400" src="https://www.ibm.com/content/dam/connectedassets-adobe-cms/worldwide-content/cdp/cf/ul/g/ef/3a/KNN.png">
 
@@ -547,7 +593,7 @@ $$
 - **consistency**
   - podmnožina featur musí objekty klasifikovat stejně jako celý množina
   - *inconsistency* - objekty se stejnými featurami patří do jiných tříd
-  - nemůžeme osekat data jen na "hair" a "height", protože by $i_2$ a $i_8$ měly stejné features, ale jinak by se klasifikovaly:
+  - nemůžeme osekat data jen na "hair" a "height", protože by $i_4$ a $i_8$ měly stejné features, ale jinak by se klasifikovaly:
   - <img width="400" src="images/sunburn-data.png">
   - <img width="400" src="images/consistency-1.png">
   - <img width="400" src="images/consistency-2.png">
@@ -621,25 +667,29 @@ $$
   - interpretace: "nejzbytečnější featuru dej pryč" - množina má po jej
 - **combined selection and elimination**
 
-![](combined-selection.png)
+<img width="400" src="images/combined-selection.png">
 
 - :bulb: další možné způsoby výběru:
-  - genetické algoritmy
-  - Simulated annealing - "a probabilistic technique for approximating the global optimum of a given function. Specifically, it is a metaheuristic to approximate global optimization in a large search space for an optimization problem."
+  - **genetické algoritmy**
+  - **Simulated annealing**
+    - "a probabilistic technique for approximating the global optimum of a given function. Specifically, it is a metaheuristic to approximate global optimization in a large search space for an optimization problem."
 
 <div style="page-break-after: always;"></div>
 
 ## 2.6 Popíšte detailne metódu PCA. Aký je rozdiel medzi PCA a ICA?
 
 - = *Principal Component Analysis*
-- způsob transformace featur do méně dimenzí
-- rotace a translace os tak, aby aby nové osy byly ve směru maximální variace dat (v podstatě hledáme nějakou lineární transformaci)
+- jediné, co nás zajímá, je souvislost featur mezi sebou, na základě toho můžeme transformovat featury do méně dimenzí
+- unsupervised
+- rotace a translace os tak, aby aby nové osy byly ve směru maximální variace dat
 - :question: v prezentaci je sposuta slidů, kde se PCA odvozuje; tady to přeskočím
 
 <img width="400" src="images/pca-overview.png">
 
 <!-- omit from toc -->
 ### Agolritmus
+
+- před výpočtem je nutné data standardizovat
 
 - máme $D$ dat s $N$ featurami, jednotlivá data jsou řádky matice: $\mathbf{X} = [\mathbf{x}_1, ..., \mathbf{x}_D]^T \in \mathbb{R}^{D\times N}$
 
@@ -664,20 +714,20 @@ $$
 
 ## 2.7 Popíšte detailne metódu PCA. Akým spôsobom ju používame pri znížení dimenzie?
 
-- místo toho, abychom transformovali vektory celým spočteným $\mathbf{B}$, vezmeme jenom $k$ vlastních vektorů (nejlépe těch nejvýznamějších)
+- úvod je stejný jako u otázky výš
 
-  - $\mathbf{B}' = [\mathbf{b}_1, ..., \mathbf{b}_k]$, $\mathbf{B}' \in \mathbb{R}^{N\times k}$
-- :question: data se sníženou dimenzí featur pak spočteme jako:
-  - $\tilde{\mathbf{X}} = \mathbf{B}'^{\,T} \mathbf{X}^T$
-  - :question: náhodně poházený dimenze; ve finále jde o to vynásobit původní data tak, abychom zachovali počet dat a snížili počet featur (k x N . N x D)
-  - $\tilde{\mathbf{X}} \in \mathbb{R}^{D\times k}$
+- chceme data redukovat $k$ featur
+- místo toho, abychom transformovali vektory celým spočteným $\mathbf{B}$, vezmeme jenom $k$ vlastních vektorů (nejlépe těch nejvýznamějších)
+- data přenásobíme touto redukovanou maticí
 
 <div style="page-break-after: always;"></div>
 
 ## 2.8 Popíšte detailne metódu PCA. Akým spôsobom určujeme počet významých vlastných vektorov?
 
+- úvod je stejný jako u otázky výš
+
 - $n$ komponent (vlastních vektorů) seřadíme sestupně podle velikosti vlastních hodnot, které k nim patří
-- vybereme $k$ nejdůležitějších komponent ("vysvětlují data"), k tomu použijeme metriku "Cummulative Explained Variance", většinou chceme, aby byla $> 0.9$, nebo $>0.95$:
+- vybereme $k$ nejdůležitějších komponent ("vysvětlují data"), k tomu použijeme metriku *Cumulative Explained Variance*, většinou chceme, aby byla $> 0.9$, nebo $>0.95$:
 
 $$\text{CEV} = \frac{\sum_{i=1}^k \lambda_i}{\sum_{i=1}^n \lambda_i} > 0.9 \;(> 0.95)$$
 
