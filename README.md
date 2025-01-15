@@ -3,7 +3,7 @@
 > :warning: Tyto poznámky nejsou udržovány
 
 - [Strojové učení v počítačovém vidění (SIS)](https://is.cuni.cz/studium/predmety/index.php?id=503935ee429674070eeddcdb8a5f4a54&tid=&do=predmet&kod=NPGR035)
-- [stáhni si PDFko](https://github.com/v-dvorak/npgr035-notes/releases/download/Latest/npgr035-notes.pdf)
+- [stáhni si PDFko](https://github.com/v-dvorak/npgr035-notes/releases/download/v1.1/npgr035-notes.pdf)
 
 ## Úvodem
 
