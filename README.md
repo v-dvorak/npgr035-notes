@@ -14,7 +14,7 @@
 - pokud to není explicitně uvedeno jinak, váhy všech algoritmů uvažujeme včetně biasu
 - některé zpracované otázky byly doplněny o informace z poznámek Júlie Križanové a Dominika Farhana, k nalezení [zde](https://dominik.whizzmot.dev/notes/mlcv/), díky moc
 - poznámky vychází i z poznatků z jiných předmětů: Vyhledávání ve videu, Úvod do umělé inteligence, Úvod do strojového učení v Pythonu
-- není toho tolik, ja kse může na první pohled zdát - pdfko je nafouklé, protože je tu dost obrázků, zkopírovaný jeden článek a formát má v sobě spoustu prázdného místa
+- není toho tolik, jak se může na první pohled zdát - pdfko je nafouklé, protože je tu dost obrázků, zkopírovaný jeden článek a formát má v sobě spoustu prázdného místa
 - algoritmy jsou popsány hlavně slovně bez přílišného formalismu, pro ten doporučuji pročíst dokument od Júlie a Dominika
 
 ## Formát zkoušky
