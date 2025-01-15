@@ -20,11 +20,8 @@
 - [Okruh A – vyžaduje sa veľmi detailná odpoveď](#okruh-a--vyžaduje-sa-veľmi-detailná-odpoveď)
   - [1.1 Popíšte SVM a postup jeho trénovania. Čo je to kernel a na čo slúži pri SVM?](#11-popíšte-svm-a-postup-jeho-trénovania-čo-je-to-kernel-a-na-čo-slúži-pri-svm)
   - [1.2 Popíšte dopredné neurónové siete so spätným šírením chyby a postup ich trénovania.](#12-popíšte-dopredné-neurónové-siete-so-spätným-šírením-chyby-a-postup-ich-trénovania)
-    - [Learning rate](#learning-rate)
   - [1.3 Popíšte samoorganizujúce sa mapy a postup ich trénovania.](#13-popíšte-samoorganizujúce-sa-mapy-a-postup-ich-trénovania)
   - [1.4 Popíšte lineárny klasifikátor a postup jeho trénovania.](#14-popíšte-lineárny-klasifikátor-a-postup-jeho-trénovania)
-    - [Metoda gradientu](#metoda-gradientu)
-    - [Data processing](#data-processing)
   - [1.5 Popíšte K-means algoritmus, voľbu K a možné alternatívy](#15-popíšte-k-means-algoritmus-voľbu-k-a-možné-alternatívy)
 - [Okruh B - vyžaduje sa stredne detailná odpoveď](#okruh-b---vyžaduje-sa-stredne-detailná-odpoveď)
   - [2.1 Popíšte detailne metódu FLDA](#21-popíšte-detailne-metódu-flda)
@@ -67,13 +64,13 @@
 <!-- omit from toc -->
 ### Popis
 
-- SVM = *support vector machine*
+- = *support vector machine*
 
 - klasifikace, regrese
 
 - supervised (s učitelem) algoritmus strojového učení, jehož cílem je najít optimální nadrovinu, která maximalizuje vzdálenosti mezi každými dvěma třídami v N-dimenzionálním prostoru
 
-- data, která leží na hranících SVM jsou "support vectors", viz obrázek
+- *support vectors* viz obrázek
 
 <img width="400" src="images/svm.png">
 
@@ -97,7 +94,7 @@
   - $\argmin_{w} = \frac12  ||\mathbf{w}||^2$
 
 - to vede na odvození pomocí Lagrangiánu
-- může se stát, že data nejsou lineárně separovatelná (jsou "skoro linárně separovatelné"), pak použijeme "hinge loss" - pokud je dato špatně zařazeno, tak vrací loss na základě vzdálenosti od dělící čáry 
+- může se stát, že data nejsou lineárně separovatelná (jsou "skoro linárně separovatelné"), pak použijeme *hinge loss* - pokud je dato špatně zařazeno, tak vrací loss na základě vzdálenosti od dělící čáry 
 
 <!-- omit from toc -->
 ### Předpovědi
@@ -155,7 +152,7 @@
    - $\hat{\mathbf{y}}$ se porovná se správnou cílovou hodnotou $\mathbf{y}$, pomocí zvolené nelineární loss funkce $L$ jako $L(\hat{\mathbf{y}}, \mathbf{y})$
 3) **zpětné šíření** (= *backpropagation*)
    - od výstupu směrem ke vstupu
-   - spočteme gradient ztráty, přičteme k vahám
+   - spočteme gradient ztráty, přičteme k vahám:
    - $\mathbf{W} \leftarrow \mathbf{W} + \Delta \mathbf{W},\; \Delta\mathbf{W} = - \alpha \nabla E\mid_\mathbf{W}$
    - $\alpha$ je learning rate, $E$ je spočtený loss
 
@@ -170,12 +167,13 @@
 - **ReLU**: $\sigma(x) = \max(0, x)$
 - **Tanh**: $\sigma(x) = \frac{e^x - e^{-x}}{e^x + e^{-x}},\; H = (-1,1)$
 
+<!-- omit from toc -->
 ### Learning rate
 
 - odpovědný za to "jak velký mají updaty vliv na váhy"
-- malý *lr* $\rightarrow$ pomalé konvegence
-- velký *lr* $\rightarrow$ skáče z místa na místo, nemusí nikdy najít lokální optimum
-- learning rate je možné upravovat během tréninku podle toho, jaká je chybovost (jak rychle se blížíme lokálnímu optimum)
+- malý *lr* $\rightarrow$ pomalá konvegence
+- velký *lr* $\rightarrow$ skáče z místa na místo, nemusí najít lokální optimum
+- learning rate je možné upravovat během tréninku podle toho, jaká je chybovost (když se blížíme lokálnímu optimu, chceme zpomalovat)
 
 <div style="page-break-after: always;"></div>
 
@@ -184,7 +182,7 @@
 - unsupervised learning
 - vysokodimenzionální data $\rightarrow$ nízkodimenzionální (většinou 1D, 2D)
 - zjednodušení dat a jejich vizualizace
-- winner-takes-all type beat algoritmus
+- *winner-takes-it-all* type beat algoritmus (hladový algoritmus)
 - cílem je, aby se neurony navázaly na topologickou strukrutur dat
 
 - "lattice" (:question: speciální matematický konstrukt), často čtvercová nebo šestiúhelníková síť neuronů
@@ -197,13 +195,16 @@
 2) náhodně vyber input vektor $\mathbf{x}$
 3) vyber nejbližší neuron (nejlepší matching)
    - $i^* = \argmin_i ||\mathbf{x} - \mathbf{w}_i||$
-4) update vah $i^*$ nodu (váhy $\approx$ pozice nodu v prostoru)
-5) update vah sousedních nodů ale ne stejně - pouze pro sousedy, přenásobení learning ratem (to pomáhá vyrovnat rozdíly ve vahách sousedících nodů), dá se specifikovat, jak velký okruh sousedních nodů má být updatem zasažen (například podle vzdálenosti od centra updatu)
+4) **update vah** $i^*$ nodu (váhy $\approx$ pozice nodu v prostoru)
+5) **update vah sousedních nodů** (ale ne stejně)
+   - pomáhá vyrovnat rozdíly ve vahách sousedících nodů
+   - dá se specifikovat, jak velký okruh sousedních nodů má být updatem zasažen (například podle vzdálenosti od centra updatu)
+   - přenásobení se learning ratem
 
-<img width="400" src="https://editor.analyticsvidhya.com/uploads/40837SOM-Structure-and-Update-of-Best-Matching-Unit-19.png">
+   - <img width="400" src="https://editor.analyticsvidhya.com/uploads/40837SOM-Structure-and-Update-of-Best-Matching-Unit-19.png">
 
-6) intenzita updatu se postupně, se vzdáleností od nodu, který vyhrál, zmenšuje
-7) opakuje se po daný počet iterací
+   - intenzita updatu se postupně, se vzdáleností od nodu, který vyhrál, zmenšuje
+6) opakuje se po daný počet iterací
 
 <img width="400" src="https://upload.wikimedia.org/wikipedia/commons/9/91/Somtraining.svg">
 
@@ -216,16 +217,18 @@
 
 - předpověď: $f(x) = \text{sign}(\mathbf{w}^T\mathbf{x})$
 
+<!-- omit from toc -->
 ### Metoda gradientu
 
-- v prezentaci se tato metoda nazývá *Gradient Method*, za mě je lepší (a snad ekvivalentní) *Gradient Descent*
+- :question: v prezentaci se tato metoda nazývá *Gradient Method*, za mě je lepší (a snad ekvivalentní) *Gradient Descent*
 - iterativně updatujeme dělící nadrovinu, dokud nekonverguje nebo nevyprší čas (podobně jako u SVM)
-- gradient nám poví, ve kterém směru se zvětší chyba, a my posuneme váhy přesně na druhou stranu (věříme, že se tím směrem chyba zmenší)
-- $u_{i+1} = u_i - \alpha(i)\nabla O\mid_{u_i}$
+- gradient nám poví, ve kterém směru se zvětší chyba, a my posuneme váhy přesně na druhou stranu (věříme, že se tím směrem chyba zmenší):
+  - $u_{i+1} = u_i - \alpha(i)\nabla O\mid_{u_i}$
 - kde $O(x)$ je funkce, která je $0$, když jsou všechny objekty správně klasifikované; $\alpha(i)$ je learning rate v kroku 
 
 - ideální $\alpha$ lze najít pomocí Tyalorova rozvoje (více v *Križanová, Farhan*) 
 
+<!-- omit from toc -->
 ### Data processing
 
 - **batch processing**:
@@ -246,13 +249,6 @@
 | **Konvergence**| stabilní, ale pomalá| rychlá, ale oscilující|
 | **Vhodné pro**| malé datasety| velké datasety|
 
-<!-- omit from toc -->
-### Trénování
-
-1) **inicializace vah** - náhodně
-2) předpověd a update vah podle loss funkce
-3) opakování, dokud nekonverguje, nebo nevyprší čas
-
 <div style="page-break-after: always;"></div>
 
 ## 1.5 Popíšte K-means algoritmus, voľbu K a možné alternatívy
@@ -268,9 +264,9 @@
 2) **přiřazení**
    - každý objekt se přiřadí k nejbližšímu možnému centroidu
 3) **rekalkulace**
-   - přepočítá pozice centroidu v prostoru vzhledem k přiřazeným objektům
-   - průměr pozic přiřazených objektů
-   - $$\text{updated} = \frac{\sum_{\{x | C(x) = k\}}x}{N_k}$$
+   - přepočítá pozice centroidu $c$ v prostoru vzhledem k přiřazeným objektům
+   - průměr pozic přiřazených objektů (součet vektorů přiřazených centroidu / počet vektorů přiřazených centroidu):
+    - $$c_\text{updated} = \frac{\sum_{\{x | C(x) = k\}}x}{N_k}$$
    - intepretace: posuneme centroid do těžiště bodů, které mu byly přiřazeny
 4) **opakuj** od 2)
    - dokud není $\text{MSE} < \text{threshold}$, nebo se mění clustering
@@ -285,8 +281,8 @@
   - citlivý na outliers a šum
   - <img width="400" src="images/k-means-outliers.png">
   - citlivý na počáteční náhodné umístění centroidů
+  - nedeterministický, výsledky nejsou konzistentní
   - <img width="400" src="images/k-means-inconsistency.png">
-  - nedeterministický, clustery nejsou konzistentní mezi více spuštěními 
 
 <!-- omit from toc -->
 ### Volba $K$
@@ -379,17 +375,16 @@ So, $k=2,3,4$ appear to be good choices, whereas $k=5$ and $k=6$ give lower-qual
 
 ## 2.1 Popíšte detailne metódu FLDA
 
-- FLDA = *Fisher LDA* = *Linear Discriminant Analysis*
+- = *Fisher LDA* = *Linear Discriminant Analysis*
 - supervised method
 - redukce dimenze a klasifikace dat do tříd
-
-- řeší vzathy uvnitř tříd a vztahy mezi třídami:
+- cílem je najít prostor featur, který optimalizuje vzathy uvnitř tříd a vztahy mezi třídami:
   - v nové projekci musí být data v různých třídách co nejdále od sebe
   - data, která jsou společně v jedné třídě, musí být naopak co nejblíže
   - maximalizujeme poměr rozptylů mezi třídami a uvnitř tříd
 
 - máme data $\{\mathbf{x}_1, \mathbf{x}_2, ..., \mathbf{x}_N\} \subset \mathbb{R}^d$
-- pro každou třídu $j$ průměr dat (vlastně střed toho clusteru):
+- pro každou třídu $j$ průměr dat (střed třídy):
 - $$\mu_j = \frac{1}{N_j} \sum_{\mathbf{x} \in \omega_j}$$
 - a průměr všech dat:
 - $$\mu = \frac{1}{N} \sum_{i=1}^N\mathbf{x}_i$$
@@ -434,16 +429,16 @@ So, $k=2,3,4$ appear to be good choices, whereas $k=5$ and $k=6$ give lower-qual
 ### Předpoklady pro funčkní ICA
 
 - prvky $\mathbf{s}$ jsou statisticky nezávislé
-- $\mathbb{E}(\mathbf{s}_i) = 0$
+- $E(\mathbf{s}_i) = 0$, data jsou nekorelovaná
 - $\text{Var}(\mathbf{s}_i) = 1$
 - non-Gaussianity = signál má rozdělení odlišné od gaussovského rozdělení (:bulb: díky tomu se dají identifikovat nezávislé komponenty)
-- $|\mathbf{x}| \geq |\mathbf{s}|$, abycho mohli signály spolehlivně rozeznat
+- $|\mathbf{x}| \geq |\mathbf{s}|$, abychom mohli signály spolehlivně rozeznat
 - :question: $\implies$ "$E\{SS^T\} = I$", "covariance matrix is unit matrix"
 
 <!-- omit from toc -->
 ### Preprocessing 
 
-(aby se data chovala podle našich požadavků)
+- aby se data chovala podle našich požadavků
 
 1) **centrování**
    - odečtení průměru, průměr dat je nula
@@ -468,7 +463,7 @@ So, $k=2,3,4$ appear to be good choices, whereas $k=5$ and $k=6$ give lower-qual
 ### ICA nevýhody
 
 - váhy jednotlivých signálů nelze určit
-- nelze určit znaménko singálu
+- nelze určit znaménko signálu
 - pořadí signálů nelze určit
 
 - :bulb: výpočetně náročné, striktní předpoklady
@@ -555,10 +550,10 @@ So, $k=2,3,4$ appear to be good choices, whereas $k=5$ and $k=6$ give lower-qual
 <!-- omit from toc -->
 ### Jak vybírat $K$?
 
-- zvyšování $K$:
+- **zvyšování** $K$:
   - odolnější vůči šumu
   - jemnější okraj
-- snižování $K$:
+- **snižování** $K$:
   - zachycení složitějších struktur (víc jagged okraje)
 
 - obecné pravidlo: "zvol $K$ tak akorát", hlavně to vyzkoušej s validačním datasetem
@@ -569,7 +564,7 @@ So, $k=2,3,4$ appear to be good choices, whereas $k=5$ and $k=6$ give lower-qual
 
 ## 2.4 Aký je rozdiel medzi dvomi základnými prístupmi k znižovaniu dimenzie (wrapper a filter), aké hodnotiace miery sa pri nich používajú?
 
-- chceme-li redukovat dimenze dat, můžeme použít dva přístupy; jedním z nich je "feature selection" (vybereme podmnožinu featur), to se dá dělat dvěma způsoby:
+- chceme-li redukovat dimenze dat (počet featur), můžeme použít přístup *feature selection*, to se dá dělat dvěma způsoby:
 
 <!-- omit from toc -->
 ### Filter
@@ -596,9 +591,9 @@ So, $k=2,3,4$ appear to be good choices, whereas $k=5$ and $k=6$ give lower-qual
   - nemůžeme osekat data jen na "hair" a "height", protože by $i_4$ a $i_8$ měly stejné features, ale jinak by se klasifikovaly:
   - <img width="400" src="images/sunburn-data.png">
   - <img width="400" src="images/consistency-1.png">
+- **independence**
   - <img width="400" src="images/consistency-2.png">
   - <img width="400" src="images/consistency-3.png">
-- **independence**
   - <img width="400" src="images/corr-feature-selector.png">
 - **information-theoretical measures**
   - Hartley's information measure
@@ -652,7 +647,7 @@ So, $k=2,3,4$ appear to be good choices, whereas $k=5$ and $k=6$ give lower-qual
   - spočítej skóre všech featur, vyber top $k$
 - **sequential forward selection**
   - mějme $\tilde{X} = \emptyset$
-  - pro každou featuru $f_j \in \tilde{X}$ spočítej skóre $\tilde{X} \cup \{f_j\}$
+  - pro každou featuru $f_j \in X$ spočítej skóre $\tilde{X} \cup \{f_j\}$
   - přiřaď nejlepší featuru do $\tilde{X}$
   - opakuj, dokud nemáš $k$
   - interpretace: jaká nová feature nejvíc zlepší už vybranou množinu
@@ -664,10 +659,9 @@ So, $k=2,3,4$ appear to be good choices, whereas $k=5$ and $k=6$ give lower-qual
   - pro každou featuru $f_j \in \tilde{X}$ spočítej skóre $\tilde{X}\setminus\{f_j\}$
   - odstraň featuru s největším skóre z $\tilde{X}$
   - opakuj, dokud není odstraněno $n-k$ featur
-  - interpretace: "nejzbytečnější featuru dej pryč" - množina má po jej
+  - interpretace: "nejzbytečnější featuru dej pryč" - množina zbylých featur má po jejím odstranění největší skóre
 - **combined selection and elimination**
-
-<img width="400" src="images/combined-selection.png">
+  - <img width="400" src="images/combined-selection.png">
 
 - :bulb: další možné způsoby výběru:
   - **genetické algoritmy**
@@ -774,7 +768,10 @@ $$\text{CEV} = \frac{\sum_{i=1}^k \lambda_i}{\sum_{i=1}^n \lambda_i} > 0.9 \;(> 
 
 ## 2.10 Popíšte ako sa vytvárajú rozhodovacie stromy.
 
-- strom má vrcholy (= testy typu ano/ne), hrany (= ano, ne), listy (= třída objektů)
+- strom má
+  - **vrcholy** - obsahuje test na jednu featuru
+  - **hrany** - odpovědi na testy ano/ne
+  - **listy** - určuje třídu klasifikovaného objektu
 
 ![](https://upload.wikimedia.org/wikipedia/commons/2/25/Cart_tree_kyphosis.png)
 
@@ -782,7 +779,7 @@ $$\text{CEV} = \frac{\sum_{i=1}^k \lambda_i}{\sum_{i=1}^n \lambda_i} > 0.9 \;(> 
 ### Algoritmus predikce
 
 - dokud nejsi v listu:
-  - proveď test z vrcholu:
+  - proveď test ve vrcholu:
     - ano $\rightarrow$ vydej se "ano" hranou
     - ne $\rightarrow$ vydej se "ne" hranou
 - vrať třídu v listu
@@ -791,14 +788,14 @@ $$\text{CEV} = \frac{\sum_{i=1}^k \lambda_i}{\sum_{i=1}^n \lambda_i} > 0.9 \;(> 
 ### Trénovaní stromu
 
 - **testy**:
-  - testy ve formátu $F_k \leq \alpha$, aka "je k-tá featura menší nebo rovna $alpha$"
-  - dělí pomnožinu trénovacích dat na dvě části
+  - testy ve formátu $F_k \leq \alpha$, aka "je k-tá featura menší nebo rovna $\alpha$"
+  - dělí podmnožinu trénovacích dat, které sem došla, na dvě části
 
 <img width="400" src="images/dt-demo.png">
 
 - **splitting criterion**:
   - funkce, která nám na základě podmnožiny trénovacích dat řekne, podle které feature máme splitovat a jak velký má být threshold $\alpha$
-  - chceme data efektivně rozdělit tak, aby všechna data ze třídy spadla do stené odpovědi ano/ne - to se často nepovede na sto procent a je tedy potřeba měřit, jak efektivně se nám podařilo data rozdělit
+  - chceme data efektivně rozdělit tak, aby všechna data ze třídy spadla do stejné odpovědi ano/ne - to se často nepovede na sto procent a je tedy potřeba měřit, jak efektivně se nám podařilo data rozdělit
 
   - **Variable quality measure**
     - definujeme míru *impurity* $I$, která spňuje několik předpokladů:
@@ -806,15 +803,15 @@ $$\text{CEV} = \frac{\sum_{i=1}^k \lambda_i}{\sum_{i=1}^n \lambda_i} > 0.9 \;(> 
     - nejlepší featura pro split, je taková která maximalizuje snížení *impurity*:
     - $$\Delta I (S, F_i) = I(S) - \sum_j \frac{|S_{ij}|}{|S|} I(S_{ij})$$
     - = impurity vstupních dat - pravděpodobnost, že skončíme v této branchi $\cdot$ impurity množin, na které se vstup rozdělí
-    - jedna z možných impurity measures je Gini-index - "jak často špatně klasifikujeme, pokud klasifikujeme podle distribuce tříd"
-    - nebo třeba "Mutual information"
+    - jedna z možných impurity measures je *Gini-index* - "jak často špatně klasifikujeme, pokud klasifikujeme podle distribuce tříd"
+    - nebo třeba *Mutual information*
 
 - **stop-splitting rule** - kdy máme zastavit dělení a prohlásit vrchol za list?
   - impurity vrcholu je menší než předem daný threshold
-  - kardinalita (počet dat, který došel do vrcholu) je dostatečně malá
+  - kardinalita (počet dat, která došla do vrcholu) je dostatečně malá
   - node je pure (všechna data jsou z jedné třídy)
 - **classification rule**:
-  - poté, co nějaký vrhcol prohlásíme za list, musíme rozhodnout, jaký bude mít label (aka co bude predikovat, když do něj dojdem)
+  - poté, co nějaký vrchol prohlásíme za list, musíme rozhodnout, jaký bude mít label (aka co bude predikovat, když do něj dojdem)
   - **pravidlo většiny** - predikujeme to, co říká většina
 
 <!-- omit from toc -->
@@ -855,8 +852,8 @@ $$\text{CEV} = \frac{\sum_{i=1}^k \lambda_i}{\sum_{i=1}^n \lambda_i} > 0.9 \;(> 
 ### Bootstrap
 
 - máme $N$ dat, která nasamplujeme
-  - traning set: $N$ dat
-  - test set: data z původního datasetu, která se nenachází v training setu
+  - **traning set**: $N$ náhodně vybraných dat (stejné dato může být vybráno víckrát)
+  - **test set**: data z původního datasetu, která se nenachází v training setu
 
 <img width="400" src="images/bootstrap.png">
 
@@ -865,7 +862,7 @@ $$\text{CEV} = \frac{\sum_{i=1}^k \lambda_i}{\sum_{i=1}^n \lambda_i} > 0.9 \;(> 
 <!-- omit from toc -->
 ### Cross validation
 
-- při vyhodnocování modelu (zláště na malém datasetu) může být jeden run (rozdělení datasetu na train/test) nedostačující
+- při vyhodnocování modelu (zvláště na malém datasetu) může být jeden run (rozdělení datasetu na train/test) nedostačující
 - to se dá vyřešit cross validací
   - dataset rozdělíme na $k$ podmnožin
   - na jedné testujeme, na ostatních trénujeme; to uděláme $k$-krát
@@ -881,7 +878,7 @@ $$\text{CEV} = \frac{\sum_{i=1}^k \lambda_i}{\sum_{i=1}^n \lambda_i} > 0.9 \;(> 
   - rozdělení datasetu na $k$ stejně velkých podmnožin
   - <img width="400" src="images/kfold.png">
 - **stratified K-fold**
-  - rozdělení datasetu na $k$ stejně velkých podmnožin, ve kterých je distribuce dat stejná (pdoobná) jako v celém datasetu
+  - rozdělení datasetu na $k$ stejně velkých podmnožin, ve kterých je distribuce dat stejná (podobná) jako v celém datasetu
   - <img width="400" src="images/s-kfold.png">
 - **leave one out**
   - testujeme pouze na jednom datu, všechny ostatní jsou training data
@@ -891,30 +888,31 @@ $$\text{CEV} = \frac{\sum_{i=1}^k \lambda_i}{\sum_{i=1}^n \lambda_i} > 0.9 \;(> 
 #### Výběr $k$
 
 - nejčastěji $10$, pro velké datasety stačí $k=3$
-- pro malé datasety je nejlepší "Leave one out"
+- pro malé datasety je nejlepší *Leave one out*
 
 <!-- omit from toc -->
 ### Hlavní rozdíly
 
 - cross validation dělí původní dataset, bootstrap z něj sampluje data
-- bootstrap testuje na datech, které model předtím neviděl
+- bootstrap náhodně sampluje data, cross validation ne
+- bootstrap 
 
 <div style="page-break-after: always;"></div>
 
 ## 2.12 Popíšte detailne konvolučné siete.
 
-- ve zkratce: input $\rightarrow$ konvoluční filtr $\rightarrow$ pooling $\rightarrow$ konvoluční filter $\rightarrow$ ... $\rightarrow$ pooling $\rightarrow$ fully connected network (klasická neuronka)
+- ve zkratce: input $\rightarrow$ konvoluční filtr $\rightarrow$ pooling $\rightarrow$ konvoluční filtr $\rightarrow$ ... $\rightarrow$ pooling $\rightarrow$ fully connected network (klasická neuronka)
 
 <img width="400" src="https://learnopencv.com/wp-content/uploads/2023/01/Convolutional-Neural-Networks.png">
 
-- první taková CNN se jmenovala CNN a používala se ke klasifikaci obrázků
+- první taková CNN se jmenovala AlexNet a používala se ke klasifikaci obrázků
 - pooling a konvoluční vrstvy postupně zpracují obrázek, dokud se nestane "hodně dlouhým vektorem", který se pošle do fully connected NN, která je zodpovědná za klasifikaci
 
 <!-- omit from toc -->
 ### Konvoluční filtr (kernel):
-- konvoluční vrstva v NN modifikkuje vstupní data na základě masky (filtru) s váhami
+- konvoluční vrstva v NN modifikuje vstupní data na základě masky (filtru) s váhami
 - má rozměr $m\times n$ a váhy, které každé z $m \times n$ buněk dávají nějakou váhu
-- výstupem je tak vážený součet vstupních čísel, skalár
+- výstupem je vážený součet vstupních čísel, skalár
 
 <img width="400" src="https://miro.medium.com/v2/resize:fit:928/0*e-SMFTzO8r7skkpc">
 
@@ -939,7 +937,7 @@ $$\text{CEV} = \frac{\sum_{i=1}^k \lambda_i}{\sum_{i=1}^n \lambda_i} > 0.9 \;(> 
 ### Použití
 
 - klasifikace dosud neviděných obrázků
-- extrakce featur - dlouhý vektor, před vstupem do fully connected NN, se dá použít jako definice obrázky pomocí číselných featur (třeba k vyhledávání podobných obrázků)
+- extrakce featur - dlouhý vektor, před vstupem do fully connected NN, se dá použít jako featury obrázku (třeba k vyhledávání podobných obrázků, funguje tu dobře cosinová vzdálenost, viz Vyhledávání ve videu)
 
 <!-- omit from toc -->
 #### Pretrained modely
@@ -963,53 +961,54 @@ $$\text{CEV} = \frac{\sum_{i=1}^k \lambda_i}{\sum_{i=1}^n \lambda_i} > 0.9 \;(> 
 <!-- omit from toc -->
 ### Metody dělení
 
-- **divisive appproach**
+- **divisive approach**
   - všechny objekty dáme do jednoho clusteru
-  - vybereme custer na splitování a splitneme hoc
-  - opakujeme (dokud nemáme chtěný počet cluterů, nebo nejsou clutery už jedn jednotlivé objekty)
+  - vybereme custer na splitování a splitneme ho (podle předem zadefinovaného kritéria)
+  - opakujeme (dokud nemáme chtěný počet clusterů, nebo nejsou clustery už jednotlivé objekty)
 - **DIANA** (divisive analysis)
   - nejzákladnější algoritmus
-  - vezmi objekt, který je nejvíce odlišný od všech ostatních a dej ho do vlastního druhého clusteru
+  - vezmi objekt, který je nejvíce odlišný od všech ostatních a dej ho do vlastního, druhého, clusteru
   - pro každý objekt porovnej vzdálenost mezi prvním a druhým clusterem, pokud je blíže k druhému, dej ho tam
   - opakuj, dokud nezařadíš všechny objekty tam, kam patří
-  - ![](diana.png)
+  - <img width="400" src="images/diana.png">
+  - (tento posotup lze opakovat pro další dělení právě vzniklých clusterů)
 - **principal directions divisive partitioning** (PDDP)
   - najdi *principal axis* (hlavní směr, jako v PCA)
   - data rozděl podle projekce na hlavní směr
   - opakuj pro každý cluster, dokud nejsme spokojeni
 - **median cut**
-  - idea je, že clustery budou stejně velké
+  - idea, že clustery budou stejně velké
   - najdi nejmenší bounding box pro všechny
   - po nejdelší straně bboxu najdi medián mezi objekty
-  - ![](median-cut-bbox.png)
+  - <img width="400" src="images/median-cut-bbox.png">
   - splitni box na dva clustery v oblasti mediánu
   - opakuj, dokud nejsme spokojeni
-  - ![](https://image2.slideserve.com/4773217/median-cut5-l.jpg)
+  - <img width="400" src="https://image2.slideserve.com/4773217/median-cut5-l.jpg">
 - **aglomerative clustering**
   - jednotlivé objekty jsou clustery
   - merguj dva sobě nejbližší clustery (podle předem definované metriky)
   - opakuj, dokud všechny objekty nejsou v jednom clusteru
-  - ![](https://www.drive5.com/usearch/manual/agg_fig.gif)
+  - <img width="400" src="https://www.drive5.com/usearch/manual/agg_fig.gif">
 
 <!-- omit from toc -->
 ### Vzdálenost clusterů
 
-- máme clustery A, B
+- máme clustery $A$ a $B$
 - **single-link**
-  - vzdálenost nejbližších bodů A a B
+  - vzdálenost nejbližších bodů $A$ a $B$
 - **complete-link**
-  - vzdálenost nejvzdálenšjích bodů A a B
+  - vzdálenost nejvzdálenšjích bodů $A$ a $B$
 - **centroid-link**
   - vzdálenost centroidů
 - **average-link**
-  - průměrná vzdálenost mezi všemi dvojicemi objektů v A a B
+  - průměrná vzdálenost mezi všemi dvojicemi objektů v $A$ a $B$
 
 - **Ward's method**
-  - merguje dva clustery s nejmenší cenou mergování
+  - počítá cenu mergování clusterů $A$ a $B$
   - $N_k$ počet objektů v clusteru, $c_k$ centroid clusteru
   - $$C_{A,B} = \frac{N_A N_B}{N_A + N_B} ||c_A - c_B||^2$$
 
-![](https://i0.wp.com/dataaspirant.com/wp-content/uploads/2018/01/Hierarchical-clustering-comparison.jpg)
+<img width="400" src="https://i0.wp.com/dataaspirant.com/wp-content/uploads/2018/01/Hierarchical-clustering-comparison.jpg">
 
 - **iterative shrinking**
   - jednotlivé objekty jsou clustery
@@ -1025,8 +1024,8 @@ $$\text{CEV} = \frac{\sum_{i=1}^k \lambda_i}{\sum_{i=1}^n \lambda_i} > 0.9 \;(> 
 
 ## 3.1 Čo je matica zámen, ako sa vytvára? Na čo sa používa?
 
-- "confusion matrix"
-- matice $2 \times 2$
+- = *confusion matrix*
+- nejčastěji matice $2 \times 2$
 - názvy kategorií jsou "trefil jsem se? - ground truth" (takže třeba *false positive* znamená, že jsem se netrefil a správně bylo říct "ano")
 
 ![](https://glassboxmedicine.com/wp-content/uploads/2019/02/confusion-matrix.png?w=640)
@@ -1038,10 +1037,10 @@ $$\text{CEV} = \frac{\sum_{i=1}^k \lambda_i}{\sum_{i=1}^n \lambda_i} > 0.9 \;(> 
 - = *receiver operating characteristics*
 
 - **true positive rate**
-  - $$\text{TPR} = \frac{\text{TP}}{\text{all ground truth positive}}$$
+  - $$\text{TPR} = \frac{\text{TP}}{\text{TP} + \text{FN}}$$
   - interpretace: poměr správně identifikovaných positiv
 - **false positive rate**
-  - $$\text{FPR} = \frac{\text{FP}}{\text{all ground truth negative}}$$
+  - $$\text{FPR} = \frac{\text{FP}}{\text{FP} + \text{TN}}$$
   - interpretace: poměr špatně identifikovaných pozitiv jako negativ
 
 - vnitřní funkce modelu nám vrátí nějakou pravděpodobnost, že objekt náleží do určité třídy, náš classifier se pak na základě předem daného thresholdu rohodne, jestli objekt zařadí do navržené třídy, nebo ne (například: "je to pes s pravděpodobnostní $0.13$" není přesvědčivé tvrzení, můžeme nastavit threshold třeba na $0.5$)
@@ -1076,7 +1075,7 @@ $$\text{CEV} = \frac{\sum_{i=1}^k \lambda_i}{\sum_{i=1}^n \lambda_i} > 0.9 \;(> 
 
 ## 3.4 Aký je rozdiel medzi PCA a ICA?
 
-- v PCA jsou na sebe komponenty komlé, v ICA to neplatí (ICA tedy dokáže zachytit věci, které PCA nedokáže)
+- v PCA jsou na sebe komponenty kolmé, v ICA to neplatí (ICA tedy dokáže zachytit věci, které PCA nedokáže)
 
 <img width="400" src="images/pca-vs-ica.png">
 
@@ -1100,7 +1099,7 @@ $$\text{CEV} = \frac{\sum_{i=1}^k \lambda_i}{\sum_{i=1}^n \lambda_i} > 0.9 \;(> 
 
 - **scaling to unit lenght**
   - $$\tilde{x_i} = \frac{x_i}{||\mathbf{x}||}$$
-  - featury se vydělí velikostí vektoru
+  - featury se vydělí velikostí vektoru (normalizace vektoru)
 
 - **standardizace**
   - $$\tilde{x_i} = \frac{x_i - \mu}{\sigma}$$
